@@ -24,4 +24,14 @@ class PokemonService {
     }
   }
 
+  // to get evolutions
+  async getEvolutionChainByIdOrName(value) {
+    try {
+      const response = await this._httpResponse.get(`${this.url}evolution-chain/${value}`)
+      return response
+    } catch (error) {
+      console.error('[PokemonService - getEvolutionChainByIdOrName]:', error)
+    }
+  }
+
 }

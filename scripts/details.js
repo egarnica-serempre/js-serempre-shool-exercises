@@ -10,6 +10,7 @@ if (!pokemonId || !pokemonId.trim().length) {
 
 function renderPokemon(data) {
   const pokemonInfo = document.createElement('div')
+  pokemonInfo.classList.add('generalContainer')
   pokemonInfo.innerHTML = `
     <section class="basicInfo">
       <h1>${data.id}: ${data.name}</h1>
@@ -20,8 +21,6 @@ function renderPokemon(data) {
       </ul>
     </div>
   `
-
-  console.log(data.abilities)
 
   const pokemonStats = data.stats
   const pokemonSprites = data.sprites
@@ -86,7 +85,6 @@ function renderPokemon(data) {
   abilitiesContainer.appendChild(pokemonAbilitiesTitle)
 
   pokemonAbilities.forEach(element => {
-    console.log(element.ability.name)
     let abilitie = document.createElement('p')
     let abilitieName = document.createTextNode(element.ability.name)
     abilitie.appendChild(abilitieName)
@@ -101,11 +99,46 @@ function renderPokemon(data) {
 }
   
 
+function renderEvolution(data) {
+
+  const generalContainer = document.querySelector('.generalContainer');
+
+  // Code to show pokemon evolution
+  const pokemonEvolution = data.chain.evolves_to[0].species
+  const evolutionContainer = document.createElement('section')
+  evolutionContainer.classList.add('evolution')
+  const pokemonEvolutionTitle = document.createElement('h2')
+  const pokemonEvolutionText = document.createTextNode("Pokemon Evolution")
+  pokemonEvolutionTitle.appendChild(pokemonEvolutionText)
+  evolutionContainer.appendChild(pokemonEvolutionTitle)
+
+  console.log(pokemonEvolution)
+  console.log(typeof(pokemonEvolution))
+
+  let evolutionImg = document.createElement('img')
+  let evolutionUrl = pokemonEvolution.url
+  let evolutionName = document.createTextNode(pokemonEvolution.name)
+
+  evolutionImg.setAttribute('src', evolutionUrl)
+
+  evolutionContainer.appendChild(evolutionImg)
+
+  generalContainer.appendChild(evolutionContainer)
+
+}
+
 document.addEventListener('DOMContentLoaded', ()=> {
 
   _pokemonService.getByIdOrName(pokemonId)
   .then(data => {
     renderPokemon(data)
+  })
+  .catch(error => console.error(error))
+
+  // To get evolutions
+  _pokemonService.getEvolutionChainByIdOrName(pokemonId)
+  .then(data => {
+    renderEvolution(data)
   })
   .catch(error => console.error(error))
 
